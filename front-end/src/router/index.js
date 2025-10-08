@@ -6,23 +6,23 @@ import Cadastro from '@/components/TelaCadastro.vue'
 
 const routes = [
    {
-    path: '/Login',
+    path: '/login',
     name: 'Login',
     component: Login
   },
   {
-    path: '/Cadastro',
+    path: '/cadastro',
     name: 'Cadastro',
     component: Cadastro
   },
   {
-    path: '/Dashboard',
+    path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard
   },
   {
     path: '/',
-    redirect: '/Login'
+    redirect: '/login'
   }
 ]
 
