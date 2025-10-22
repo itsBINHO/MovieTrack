@@ -19,3 +19,5 @@ export const verifyToken = (req, res, next) => {
     next(); // deixa a requisição seguir para a rota protegida
   });
 };
+
+export default verifyToken;
