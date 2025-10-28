@@ -1,16 +1,21 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
-export function verifyToken(req, res, next) {
+export const verifyToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Acesso negado: token não fornecido" });
+    return res.status(403).json({ message: "Acesso negado: token não fornecido" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ message: "Token inválido!" });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-  });
+  } catch (err) {
+    console.error("Erro ao verificar token:", err.message);
+    return res.status(403).json({ message: "Token inválido!" });
+  }
 }

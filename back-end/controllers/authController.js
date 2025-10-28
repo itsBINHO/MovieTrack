@@ -37,7 +37,7 @@ export const login = (req, res) => {
   });
 };
 
-const SECRET = "chave-secreta";
+const SECRET = "limit999";
 
 export const loginUser = async (req, res) => {
   const {email, password} = req.body;
@@ -55,9 +55,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({message: "Senha incorreta"});
     }
 
-    const token = jwt.sign({id: user.id, username: user.username}, SECRET, {expiresIn: "1h"});
-
-    console.log(">> TOKEN GERADO:", token);
+    const token = jwt.sign({id: user.id, username: user.username}, process.env.JWT_SECRET, {expiresIn: "1h"});
 
     res.status(200).json({
       message: "Login bem-sucedido",
