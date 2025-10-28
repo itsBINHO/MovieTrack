@@ -28,14 +28,14 @@
 
         <v-form v-model="valid" ref="form">
           <v-text-field
-            v-model="username"
-            label="Usuário ou Email"
+            v-model="email"
+            label="Email"
             variant="outlined"
             hide-details
             class="mb-4"
             density="comfortable"
             style="color: white;"
-            :rules="[v => !!v || 'Digite seu usuário ou email']"
+            :rules="[v => !!v || 'Digite seu email']"
           ></v-text-field>
 
           <v-text-field
@@ -59,6 +59,7 @@
           >
             Entrar
           </v-btn>
+          <p v-if="error" class="text-red text-center mt-2">{{ error }}</p>
 
           <div class="d-flex justify-space-between" style="color: white; font-size: 0.9rem;">
             <a href="#" style="color: white; text-decoration: none;">Esqueci minha senha</a>
@@ -100,19 +101,29 @@
 
 <script setup>
   import { ref } from 'vue'
+  import api from '../services/api.js'
   import { useRouter } from 'vue-router'
 
-  const username = ref('')
-  const password = ref('')
-  const router = useRouter()
+  const router = useRouter();
 
-  function login() {
-    if (username.value && password.value) {
-      router.push('/dashboard')
-    } else {
-      alert('Preencha usuário e senha!')
-    }
+  const email = ref('');
+  const password = ref('');
+  const error = ref('');
+  
+
+  async function login() {
+   try {
+    const response = await api.post('/auth/login', {
+      email: email.value,
+      password: password.value
+    });
+    localStorage.setItem('token', response.data.token);
+    router.push('/Dashboard');
+   } catch (err) {
+    error.value = "Usuário ou senha inválidos.";
+   }
   }
+
 </script>
 
 <style>
