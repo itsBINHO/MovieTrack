@@ -43,7 +43,7 @@ export const loginUser = async (req, res) => {
   const {email, password} = req.body;
 
   try {
-    const [rows] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
     const user = rows[0];
 
     if (!user) {
@@ -56,6 +56,8 @@ export const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign({id: user.id, username: user.username}, SECRET, {expiresIn: "1h"});
+
+    console.log(">> TOKEN GERADO:", token);
 
     res.status(200).json({
       message: "Login bem-sucedido",

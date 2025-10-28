@@ -1,5 +1,5 @@
 import express from 'express';
-import verifyToken from '../middlewares/authMiddleware.js';
+import { verifyToken }  from '../middlewares/authMiddleware.js';
 import { addMovie, getUserMovies, editMovie, removeMovie } from '../controllers/movieController.js';
 
 const router = express.Router();

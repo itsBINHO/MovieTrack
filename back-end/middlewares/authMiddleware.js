@@ -1,23 +1,16 @@
-import JsonWebTokenError from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
-const SECRET = "";
-
-export const verifyToken = (req, res, next) => {
+export function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Acesso negado!" });
+    return res.status(401).json({ message: "Acesso negado: token não fornecido" });
   }
 
-  JsonWebTokenError.verify(token, SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: "Token inválido!" });
-    }
-    
-    req.user = user; // Armazena as infos do usuário dentro do req
-    next(); // deixa a requisição seguir para a rota protegida
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(403).json({ message: "Token inválido!" });
+    req.user = decoded;
+    next();
   });
-};
-
-export default verifyToken;
+}
