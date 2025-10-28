@@ -2,12 +2,12 @@ import { createMovie, getMoviesByUser, updateMovie, deleteMovie } from "../model
 
 export const addMovie = async (req, res) => {
   try {
-    const user_id = req.user.id;
-    const newMovie = { ...req.body, user_id };
-   await createMovie(newMovie);
-   res.status(201).json({ message: "Conteúdo adicionado com sucesso!" });
+    const movie = { ...req.body, user_id: req.user.id };
+    const result = await createMovie(movie);
+    res.status(201).json({ message: "Filme/série/adicionado com sucesso!", id: result.insertId });
   } catch (error) {
-    res.status(500).json({ error: "Erro ao adicionar conteúdo.", error});
+    console.error("Erro ao adicionar:", error);
+    res.status(500).json({ message: "Erro ao adicionar filme/série/anime" });
   }
 };
 
@@ -23,22 +23,28 @@ export const getUserMovies = async (req, res) => {
 
 export const editMovie = async (req, res) => {
   try {
-    const user_id = req.user.id;
     const { id } = req.params;
-    await updateMovie(id, req.body, user_id);
-    res.status(200).json({ message: "Conteúdo atualizado com sucesso!" });
+    const result = await updateMovie(id, req.body, req.user.id);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Filme não encontrado ou sem permissão" });
+    }
+    res.status(200).json({ message: "Filme atualizado com sucesso!" });
   } catch (error) {
-    res.status(500).json({ message: "Erro ao atualizar o conteúdo.", error });
+    console.error("Erro ao atualizar:", error);
+    res.status(500).json({ message: "Erro ao atualizar filme/série/anime" });
   }
 };
 
 export const removeMovie = async (req, res) => {
   try {
-    const user_id = req.user.id;
     const { id } = req.params;
-    await deleteMovie(id, user_id);
-    res.status(200).json({ message: "Conteúdo excluído com sucesso!" });
+    const result = await deleteMovie(id, req.user.id);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Filme não encontrado ou sem permissão" });
+    }
+    res.status(200).json({ message: "Filme removido com sucesso!" });
   } catch (error) {
-    res.status(500).json({ message: "Erro ao excluir o Conteúdo.", error });
+    console.error("Erro ao excluir:", error);
+    res.status(500).json({ message: "Erro ao excluir filme/série/anime" });
   }
 };
