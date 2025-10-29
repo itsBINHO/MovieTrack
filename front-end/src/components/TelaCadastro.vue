@@ -63,10 +63,11 @@
               class="mb-4"
               size="large"
               style="background-color: #FFB533; color: black; font-weight: bold; border-radius: 8px;"
-              @click="register"
-            >
+              @click="register">
               Criar Conta
             </v-btn>
+            <p v-if="success" class="text-green text-center mt-2">{{ success }}</p>
+            <p v-if="error" class="text-red text-center mt-2">{{ error }}</p>
 
             <div class="text-center" style="color: white; font-size: 0.9rem;">
               Já possui conta?
@@ -83,24 +84,30 @@
 
 <script setup>
 import { ref } from "vue"
+import api from "@/services/api"
 import { useRouter } from "vue-router"
+
+const router = useRouter()
 
 const username = ref("")
 const email = ref("")
 const password = ref("")
 const confirmPassword = ref("")
-const valid = ref(false)
-const form = ref(null)
+const success = ref("");
+const error = ref("");
 
-const router = useRouter()
-
-function register() {
-  if (form.value.validate()) {
-    console.log("Usuário registrado:", {
-      username: username.value,
+async function register() {
+  try {
+    await api.post("/auth/register", {
+      name: username.value,
       email: email.value,
-    })
-    router.push("/login")
+      password: password.value,
+    });
+    
+    success.value = "Usuário cadastrado com sucesso!";
+    setTimeout(() => router.push("/login"), 1500);
+  } catch (err) {
+    error.value = "Erro ao cadastrar. Tente novamente.";
   }
 }
 </script>
