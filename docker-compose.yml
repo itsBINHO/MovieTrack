@@ -1,39 +1,41 @@
 services:
-  backend:
-    build: ./back-end
-    container_name: movie_backend
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./back-end/.env
-    volumes:
-      - ./back-end:/app
-    depends_on:
-      - db
-
-  frontend:
-    build: ./front-end
-    container_name: movie_frontend
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./front-end:/app
-    depends_on:
-      - backend
-
   db:
-    image: mysql:8.0
-    container_name: movie_db
-    restart: always
+    image: mysql:8
+    container_name: movietrack-db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: movietrack
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: movietrack-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    restart: always
+    environment:
+      - NODE_ENV=development
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: movietrack-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: always
 
 volumes:
-  mysql_data:
+  db_data:
