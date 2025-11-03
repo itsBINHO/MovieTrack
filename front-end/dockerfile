@@ -9,4 +9,4 @@ RUN pnpm install  # ← instala tudo, incluindo vite
 COPY . .
 
 EXPOSE 5173
-CMD ["pnpm", "dev"]
+CMD ["npm", "run", "dev"]

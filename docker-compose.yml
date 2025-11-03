@@ -15,7 +15,7 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ./back-end
       dockerfile: Dockerfile
     container_name: movietrack-backend
     ports:
@@ -28,7 +28,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./front-end
       dockerfile: Dockerfile
     container_name: movietrack-frontend
     ports:
