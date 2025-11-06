@@ -109,20 +109,23 @@
   const email = ref('');
   const password = ref('');
   const error = ref('');
+  const loading = ref(false);
   
 
   async function login() {
    try {
-    const response = await api.post('/auth/login', {
+    const { data } = await api.post('/auth/login', {
       email: email.value,
       password: password.value
     });
-    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('token', data.token);
     router.push('/Dashboard');
    } catch (err) {
-    error.value = "Usuário ou senha inválidos.";
-   }
+    error.value = err.response?.data?.message || 'Usuário ou senha inválidos.'
+  } finally {
+    loading.value = false
   }
+}
 
 </script>
 
@@ -281,7 +284,7 @@ li.starIcon::before {
 }
 
 .fade-up-enter-active {
-  transition: all 1.8s ease;
+  transition: all .8s ease;
 }
 .fade-up-enter-from {
   opacity: 0;
