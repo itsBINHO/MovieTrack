@@ -1,7 +1,7 @@
 <template>
   <div class="register-page">
     <transition name="fade-up" appear>
-      <v-container class="d-flex align-center justify-center">
+      <v-container class="d-flex align-center justify-center min-h-screen">
         <v-card
           class="cardRegister pa-10"
           style="background-color: #1a1a1a;"
@@ -55,7 +55,7 @@
               class="mb-6"
               density="comfortable"
               style="color: white;"
-              :rules="[v => v === password || 'As senhas não conferem']"
+              :rules="[v => v === password.value || 'As senhas não conferem']"
             ></v-text-field>
 
             <v-btn
@@ -71,9 +71,10 @@
 
             <div class="text-center" style="color: white; font-size: 0.9rem;">
               Já possui conta?
-              <a href="/Login" style="color: #FFB533; text-decoration: none; font-weight: bold;">
+             <RouterLink 
+                to="/Login" style="color: #FFB533; font-weight: bold; text-decoration: none;">
                 Faça login
-              </a>
+             </RouterLink>
             </div>
           </v-form>
         </v-card>
@@ -95,19 +96,26 @@ const password = ref("")
 const confirmPassword = ref("")
 const success = ref("");
 const error = ref("");
+const valid = ref(true)  
 
 async function register() {
+  if (password.value !== confirmPassword.value) {
+    error.value = "As senhas não conferem!"
+    return
+  }
+
   try {
-    await api.post("/auth/register", {
+    const { data } = await api.post("/auth/register", {
       name: username.value,
       email: email.value,
       password: password.value,
     });
-    
     success.value = "Usuário cadastrado com sucesso!";
-    setTimeout(() => router.push("/login"), 1500);
+    error.value = "";
+    setTimeout(() => router.push("/Login"), 1500);
   } catch (err) {
-    error.value = "Erro ao cadastrar. Tente novamente.";
+    error.value = err.response?.data?.message || "Erro ao cadastrar. Tente novamente.";
+    success.value = "";
   }
 }
 </script>
