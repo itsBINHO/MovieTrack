@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 
 RUN npm install -g pnpm
-RUN pnpm install  # ← instala tudo, incluindo vite
+RUN pnpm install
 
 COPY . .
 
