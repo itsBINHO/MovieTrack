@@ -16,7 +16,7 @@
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-function irParaPesquisa() {
+function goToSearch() {
   alert('Na próxima etapa vamos criar a tela de pesquisa 😉')
 }
 </script>
